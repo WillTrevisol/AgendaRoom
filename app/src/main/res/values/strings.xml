@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">AgendaRoom</string>
+    <string name="create_new_contact">Create new contact</string>
+    <string name="name">Name:</string>
+    <string name="phone">Phone:</string>
+    <string name="email">Email:</string>
+    <string name="empty_list">Empty contacts list</string>
+    <string name="save">Save</string>
+    <string name="success_on_insert_contact">Success on insert contact</string>
 </resources>
