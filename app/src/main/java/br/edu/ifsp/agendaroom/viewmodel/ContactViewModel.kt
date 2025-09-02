@@ -18,13 +18,34 @@ sealed class RegisterState {
     data object ShowLoading : RegisterState()
 }
 
+sealed class ContactsListState {
+    data class SearchAllSuccess(val contacts: List<Contact>): ContactsListState()
+    data object Loading: ContactsListState()
+    data object Empty: ContactsListState()
+}
+
 class ContactViewModel(private val repository: ContactRepository) : ViewModel() {
     private val _registerState = MutableStateFlow<RegisterState>(RegisterState.ShowLoading)
     val registerState = _registerState.asStateFlow()
 
+    private val _contactsListState = MutableStateFlow<ContactsListState>(ContactsListState.Loading)
+    val contactsListState = _contactsListState.asStateFlow()
+
     fun insert(contactEntity: Contact) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(contactEntity)
         _registerState.value = RegisterState.InsertSuccess
+    }
+
+    fun getAllContacts() {
+        viewModelScope.launch {
+            repository.getAllContacts().collect { result ->
+                if (result.isEmpty()) {
+                    _contactsListState.value = ContactsListState.Empty
+                } else {
+                    _contactsListState.value = ContactsListState.SearchAllSuccess(result)
+                }
+            }
+        }
     }
 
     companion object {

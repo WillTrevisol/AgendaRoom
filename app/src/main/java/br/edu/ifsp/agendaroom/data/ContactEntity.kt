@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import br.edu.ifsp.agendaroom.domain.Contact
 
-@Entity(tableName = "contact")
+@Entity(tableName = "contacts")
 data class ContactEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Int,
