@@ -70,5 +70,14 @@ class ContactsListFragment : Fragment() {
             updateList(contactsList)
         }
         binding.recyclerview.adapter = contactAdapter
+
+        contactAdapter.onItemClick = { it ->
+            val bundle = Bundle()
+            bundle.putInt("contactId", it.id)
+            findNavController().navigate(
+                R.id.actionContactsListToContactDetail,
+                bundle
+            )
+        }
     }
 }

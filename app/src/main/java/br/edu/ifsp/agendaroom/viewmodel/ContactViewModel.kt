@@ -18,6 +18,11 @@ sealed class RegisterState {
     data object ShowLoading : RegisterState()
 }
 
+sealed class ContactDetailState {
+    data class GetByIdSuccess(val contact: Contact): ContactDetailState()
+    data object Loading: ContactDetailState()
+}
+
 sealed class ContactsListState {
     data class SearchAllSuccess(val contacts: List<Contact>): ContactsListState()
     data object Loading: ContactsListState()
@@ -27,6 +32,10 @@ sealed class ContactsListState {
 class ContactViewModel(private val repository: ContactRepository) : ViewModel() {
     private val _registerState = MutableStateFlow<RegisterState>(RegisterState.ShowLoading)
     val registerState = _registerState.asStateFlow()
+
+    val _contactDetailState = MutableStateFlow<ContactDetailState>(ContactDetailState.Loading)
+    val contactDetailState = _contactDetailState.asStateFlow()
+
 
     private val _contactsListState = MutableStateFlow<ContactsListState>(ContactsListState.Loading)
     val contactsListState = _contactsListState.asStateFlow()
@@ -44,6 +53,14 @@ class ContactViewModel(private val repository: ContactRepository) : ViewModel() 
                 } else {
                     _contactsListState.value = ContactsListState.SearchAllSuccess(result)
                 }
+            }
+        }
+    }
+
+    fun getContactById(id: Int) {
+        viewModelScope.launch {
+            repository.getContactById(id).collect { result ->
+                _contactDetailState.value = ContactDetailState.GetByIdSuccess(result)
             }
         }
     }

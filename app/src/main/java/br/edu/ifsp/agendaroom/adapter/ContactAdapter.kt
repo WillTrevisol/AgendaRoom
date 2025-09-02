@@ -9,6 +9,7 @@ import br.edu.ifsp.agendaroom.domain.Contact
 class ContactAdapter: RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
     var contactsList = ArrayList<Contact>()
     private lateinit var binding: ContactTileBinding
+    var onItemClick: ((Contact) -> Unit) ?= null
 
     fun updateList(newList: List<Contact>) {
         contactsList = newList as ArrayList<Contact>
@@ -35,5 +36,11 @@ class ContactAdapter: RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
     inner class ContactViewHolder(view: ContactTileBinding): RecyclerView.ViewHolder(view.root) {
         var name = view.nameTextView
         var phone = view.phoneTextView
+
+        init {
+            view.root.setOnClickListener {
+                onItemClick?.invoke(contactsList[adapterPosition])
+            }
+        }
     }
 }

@@ -13,6 +13,9 @@
         <action
             android:id="@+id/actionContactsListToRegister"
             app:destination="@id/contactRegisterFragment" />
+        <action
+            android:id="@+id/actionContactsListToContactDetail"
+            app:destination="@id/contactDetailFragment" />
     </fragment>
 
     <fragment
@@ -20,5 +23,10 @@
         android:name="br.edu.ifsp.agendaroom.ui.ContactRegisterFragment"
         android:label="New contact"
         tools:layout="@layout/fragment_contact_register" />
+    <fragment
+        android:id="@+id/contactDetailFragment"
+        android:name="br.edu.ifsp.agendaroom.ui.ContactDetailFragment"
+        android:label="Contact details"
+        tools:layout="@layout/fragment_contact_detail" />
 
 </navigation>

@@ -12,4 +12,7 @@ interface ContactDAO {
 
     @Query("SELECT * FROM contacts ORDER BY name")
     fun getAllContacts(): Flow<List<ContactEntity>>
+
+    @Query("SELECT * FROM contacts WHERE id=:id")
+    fun getContactById(id: Int): Flow<ContactEntity>
 }
