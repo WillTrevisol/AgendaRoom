@@ -19,6 +19,8 @@ sealed class RegisterState {
 }
 
 sealed class ContactDetailState {
+    data object UpdateSuccess: ContactDetailState()
+    data object DeleteSuccess: ContactDetailState()
     data class GetByIdSuccess(val contact: Contact): ContactDetailState()
     data object Loading: ContactDetailState()
 }
@@ -33,7 +35,8 @@ class ContactViewModel(private val repository: ContactRepository) : ViewModel() 
     private val _registerState = MutableStateFlow<RegisterState>(RegisterState.ShowLoading)
     val registerState = _registerState.asStateFlow()
 
-    val _contactDetailState = MutableStateFlow<ContactDetailState>(ContactDetailState.Loading)
+    private val _contactDetailState =
+        MutableStateFlow<ContactDetailState>(ContactDetailState.Loading)
     val contactDetailState = _contactDetailState.asStateFlow()
 
 
@@ -43,6 +46,16 @@ class ContactViewModel(private val repository: ContactRepository) : ViewModel() 
     fun insert(contactEntity: Contact) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(contactEntity)
         _registerState.value = RegisterState.InsertSuccess
+    }
+
+    fun update(contactEntity: Contact) = viewModelScope.launch(Dispatchers.IO) {
+        repository.update(contactEntity)
+        _contactDetailState.value = ContactDetailState.UpdateSuccess
+    }
+
+    fun delete(contactEntity: Contact) = viewModelScope.launch(Dispatchers.IO) {
+        repository.delete(contactEntity)
+        _contactDetailState.value = ContactDetailState.DeleteSuccess
     }
 
     fun getAllContacts() {
@@ -66,19 +79,19 @@ class ContactViewModel(private val repository: ContactRepository) : ViewModel() 
     }
 
     companion object {
-        fun contactViewModelFactory() : ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(
-                    modelClass: Class<T>,
-                    extras: CreationExtras
-                ): T {
-                    val application = checkNotNull(
-                        extras[APPLICATION_KEY]
-                    )
-                    return ContactViewModel(
-                        (application as ContactApplication).repository
-                    ) as T
-                }
+    fun contactViewModelFactory(): ViewModelProvider.Factory =
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+                val application = checkNotNull(
+                    extras[APPLICATION_KEY]
+                )
+                return ContactViewModel(
+                    (application as ContactApplication).repository
+                ) as T
             }
+        }
     }
 }
